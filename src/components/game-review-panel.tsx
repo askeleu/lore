@@ -108,33 +108,43 @@ function Stars({
 function CommunityStars({
   score,
   sizeClass = "text-base",
+  scoreClass = "text-xs",
 }: {
   score: number;
   sizeClass?: string;
+  scoreClass?: string;
 }) {
   // Deciles: 4.6 -> 60% of the fifth star. Floor, never round up.
   const tenths = Math.floor(Math.round(score * 100) / 10);
   return (
-    <div
-      role="img"
-      aria-label={`Community rating: ${score} out of 5`}
-      className={`flex gap-1 leading-none ${sizeClass}`}
-    >
-      {[0, 1, 2, 3, 4].map((i) => {
-        const fill = Math.min(Math.max(tenths - i * 10, 0), 10) * 10;
-        return (
-          <span key={i} className="relative text-community/20">
-            ★
-            <span
-              aria-hidden
-              className="absolute inset-0 text-community"
-              style={{ clipPath: `inset(0 ${100 - fill}% 0 0)` }}
-            >
+    <div className="flex items-center gap-2">
+      <span
+        aria-hidden
+        className={`font-display leading-none tabular-nums text-community ${scoreClass}`}
+      >
+        {score.toFixed(1)}
+      </span>
+      <div
+        role="img"
+        aria-label={`Community rating: ${score} out of 5`}
+        className={`flex gap-1 leading-none ${sizeClass}`}
+      >
+        {[0, 1, 2, 3, 4].map((i) => {
+          const fill = Math.min(Math.max(tenths - i * 10, 0), 10) * 10;
+          return (
+            <span key={i} className="relative text-community/20">
               ★
+              <span
+                aria-hidden
+                className="absolute inset-0 text-community"
+                style={{ clipPath: `inset(0 ${100 - fill}% 0 0)` }}
+              >
+                ★
+              </span>
             </span>
-          </span>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -201,7 +211,11 @@ export function GameReviewPanel() {
           onChange={setOverall}
           sizeClass="text-4xl"
         />
-        <CommunityStars score={communityScores.Overall} sizeClass="text-xl" />
+        <CommunityStars
+          score={communityScores.Overall}
+          sizeClass="text-xl"
+          scoreClass="text-sm"
+        />
       </div>
 
       <dl className="flex flex-col divide-y divide-gold/10 border-y border-gold/10">
